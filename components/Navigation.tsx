@@ -7,6 +7,7 @@ import { Menu, X, User, LogOut } from 'lucide-react';
 
 const navItems = [
   { name: 'Home', href: '/' },
+  { name: 'Dashboard', href: '/dashboard' },
   { name: 'Jobs', href: '/jobs' },
   { name: 'ROI Calculator', href: '/roi-dashboard' },
   { name: 'Skills Benchmark', href: '/benchmark' },
