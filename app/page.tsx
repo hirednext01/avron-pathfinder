@@ -1,15 +1,15 @@
 export default function Home() {
   return (
-    <div style={{ padding: '50px', background: 'linear-gradient(to right, blue, purple)', color: 'white', minHeight: '100vh' }}>
-      <h1 style={{ fontSize: '48px' }}>Avron Career Intelligence Platform</h1>
-      <p style={{ fontSize: '24px' }}>Welcome! Your app is working.</p>
-      <div style={{ marginTop: '40px' }}>
-        <a href="/jobs" style={{ marginRight: '20px', color: 'white' }}>Jobs</a>
-        <a href="/roi" style={{ marginRight: '20px', color: 'white' }}>ROI Calculator</a>
-        <a href="/skills" style={{ marginRight: '20px', color: 'white' }}>Skills</a>
-        <a href="/mentors" style={{ marginRight: '20px', color: 'white' }}>Mentors</a>
-        <a href="/courses" style={{ color: 'white' }}>Courses</a>
-      </div>
+    <div style={{ 
+      padding: '20px', 
+      background: '#1e3a8a', 
+      color: 'white', 
+      minHeight: '100vh',
+      fontFamily: 'Arial, sans-serif'
+    }}>
+      <h1>Hello World - Avron Platform</h1>
+      <p>Next.js app is working!</p>
+      <p>Build successful</p>
     </div>
   )
 }
