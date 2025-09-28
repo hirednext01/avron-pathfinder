@@ -1,12 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../../src/integrations/supabase/client';
 import Navigation from '../../components/Navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '../../src/components/ui/card';
 import { Button } from '../../src/components/ui/button';
 import { 
-  User, 
   Briefcase, 
   Calculator, 
   BookOpen, 
@@ -32,13 +31,25 @@ interface UserProfile {
 }
 
 interface RecentActivity {
-  jobSearches: any[];
-  roiCalculations: any[];
-  courseViews: any[];
+  jobSearches: Array<{
+    created_at: string;
+    match_score?: number;
+    job?: { title?: string };
+  }>;
+  roiCalculations: Array<{
+    created_at: string;
+    roi_5_year_percentage?: number;
+  }>;
+  courseViews: Array<{
+    created_at: string;
+    course_name: string;
+    provider: string;
+    recommendation_score?: number;
+  }>;
 }
 
 export default function DashboardPage() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<{ id: string; email?: string; user_metadata?: any } | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [stats, setStats] = useState<DashboardStats>({
     jobsViewed: 0,
@@ -124,7 +135,7 @@ export default function DashboardPage() {
         supabase.removeChannel(channel);
       };
     }
-  }, [user]);
+  }, [user, fetchUserData, fetchDashboardStats, fetchRecentActivity]);
 
   const checkUser = async () => {
     try {
@@ -139,7 +150,7 @@ export default function DashboardPage() {
     }
   };
 
-  const fetchUserData = async () => {
+  const fetchUserData = useCallback(async () => {
     if (!user) return;
 
     try {
@@ -153,7 +164,7 @@ export default function DashboardPage() {
       if (candidate) {
         setUserProfile({
           name: candidate.name || 'User',
-          email: candidate.email || user.email
+          email: candidate.email || user.email || ''
         });
       } else {
         // Fallback to user email
@@ -169,9 +180,9 @@ export default function DashboardPage() {
         email: user.email || ''
       });
     }
-  };
+  }, [user]);
 
-  const fetchDashboardStats = async () => {
+  const fetchDashboardStats = useCallback(async () => {
     if (!user) return;
 
     try {
@@ -208,9 +219,9 @@ export default function DashboardPage() {
     } catch (error) {
       console.error('Error fetching dashboard stats:', error);
     }
-  };
+  }, [user]);
 
-  const fetchRecentActivity = async () => {
+  const fetchRecentActivity = useCallback(async () => {
     if (!user) return;
 
     try {
@@ -248,7 +259,7 @@ export default function DashboardPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
 
   if (loading) {
     return (
@@ -276,7 +287,7 @@ export default function DashboardPage() {
               Welcome back, {userProfile?.name}!
             </h1>
             <p className="text-[#8A98A9] text-lg">
-              Here's your career intelligence overview
+              Here&apos;s your career intelligence overview
             </p>
             {userProfile?.email && (
               <p className="text-sm text-[#8A98A9] mt-1">

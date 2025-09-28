@@ -13,6 +13,7 @@ const navItems = [
   { name: 'Skills Benchmark', href: '/benchmark' },
   { name: 'Courses', href: '/courses' },
   { name: 'Mentors', href: '/mentors' },
+  { name: 'DB Inspector', href: '/database-inspector' },
 ];
 
 export default function Navigation() {
