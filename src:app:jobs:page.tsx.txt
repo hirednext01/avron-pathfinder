@@ -1,0 +1,57 @@
+"use client"
+import { useEffect, useState } from "react"
+import { supabase } from "@/lib/supabase"
+
+export default function JobsPage() {
+  const [jobs, setJobs] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function loadJobs() {
+      const { data, error } = await supabase
+        .from("job_listings_public")
+        .select("*")
+        .order("posted_at", { ascending: false })
+        .limit(20)
+
+      if (error) {
+        console.error(error)
+      } else {
+        setJobs(data || [])
+      }
+      setLoading(false)
+    }
+    loadJobs()
+  }, [])
+
+  if (loading) return <p style={{ padding: 24 }}>Loading jobs…</p>
+
+  if (jobs.length === 0) {
+    // ✅ fallback demo jobs
+    return (
+      <main style={{ padding: 24 }}>
+        <h1>Latest Jobs</h1>
+        <ul>
+          <li>Frontend Engineer – TechCorp (Bangalore)</li>
+          <li>Data Analyst – DataWorks (Remote)</li>
+          <li>AI Research Intern – AvronAI (Delhi)</li>
+        </ul>
+      </main>
+    )
+  }
+
+  return (
+    <main style={{ padding: 24 }}>
+      <h1>Latest Jobs</h1>
+      <ul style={{ listStyle: "none", padding: 0 }}>
+        {jobs.map(job => (
+          <li key={job.id} style={{ marginBottom: 16 }}>
+            <h2>{job.title}</h2>
+            <p>{job.company} — {job.location}</p>
+            {job.url && <a href={job.url} target="_blank" rel="noopener noreferrer">View Job</a>}
+          </li>
+        ))}
+      </ul>
+    </main>
+  )
+}
