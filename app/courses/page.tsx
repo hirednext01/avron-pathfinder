@@ -37,8 +37,8 @@ export default function CoursesPage() {
         .limit(20);
 
       setCourses(data || []);
-    } catch (error) {
-      console.error('Error loading courses:', error);
+    } catch (err) {
+      console.error('Error loading courses:', err);
     } finally {
       setLoading(false);
     }

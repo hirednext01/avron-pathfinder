@@ -9,10 +9,8 @@ import {
   Briefcase, 
   Calculator, 
   BookOpen, 
-  Upload, 
   Search,
   Users,
-  TrendingUp,
   Clock,
   BarChart3
 } from 'lucide-react';
@@ -30,8 +28,16 @@ interface UserProfile {
   email: string;
 }
 
+interface User {
+  id: string;
+  email?: string;
+  user_metadata?: {
+    full_name?: string;
+  };
+}
+
 export default function DashboardPage() {
-  const [user, setUser] = useState<{ id: string; email?: string; user_metadata?: any } | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [stats, setStats] = useState<DashboardStats>({
     jobsViewed: 0,
@@ -96,9 +102,6 @@ export default function DashboardPage() {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         setUser(user);
-        if (!user) {
-          window.location.href = '/login';
-        }
       } catch (error) {
         console.error('Error checking user:', error);
       } finally {

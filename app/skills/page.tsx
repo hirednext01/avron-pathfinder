@@ -39,7 +39,7 @@ export default function SkillsPage() {
   const [currentSkill, setCurrentSkill] = useState('');
   const [selfRating, setSelfRating] = useState(5);
   const [loading, setLoading] = useState(true);
-  const [assessing, setAssessing] = useState(false);
+  const [assessing] = useState(false);
 
   useEffect(() => {
     loadSkillBenchmarks();

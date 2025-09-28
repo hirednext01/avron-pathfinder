@@ -4,11 +4,11 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../../src/integrations/supabase/client';
 import Navigation from '../../components/Navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '../../src/components/ui/card';
-import { User, Edit, Save, Mail, MapPin, Briefcase, GraduationCap } from 'lucide-react';
+import { User, Mail, MapPin, Briefcase, GraduationCap } from 'lucide-react';
 
 export default function ProfilePage() {
-  const [user, setUser] = useState<any>(null);
-  const [profile, setProfile] = useState<any>(null);
+  const [user, setUser] = useState<{ id: string; email?: string } | null>(null);
+  const [profile, setProfile] = useState<{ name?: string; email?: string; location?: string; current_title?: string; education?: string } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

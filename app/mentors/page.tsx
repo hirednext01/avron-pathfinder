@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../../src/integrations/supabase/client';
 import Navigation from '../../components/Navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '../../src/components/ui/card';
@@ -14,7 +14,6 @@ import {
   Video,
   Search,
   Filter,
-  DollarSign,
   Award,
   Clock
 } from 'lucide-react';
@@ -44,9 +43,33 @@ export default function MentorsPage() {
     loadMentors();
   }, []);
 
+  const filterMentors = useCallback(() => {
+    let filtered = mentors;
+
+    if (searchTerm) {
+      filtered = filtered.filter(mentor => 
+        (mentor.name && mentor.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (mentor.display_name && mentor.display_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (mentor.title && mentor.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (mentor.headline && mentor.headline.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (mentor.specialties && mentor.specialties.some(s => s.toLowerCase().includes(searchTerm.toLowerCase())))
+      );
+    }
+
+    if (specialtyFilter) {
+      filtered = filtered.filter(mentor =>
+        mentor.specialties && mentor.specialties.some(s => 
+          s.toLowerCase().includes(specialtyFilter.toLowerCase())
+        )
+      );
+    }
+
+    setFilteredMentors(filtered);
+  }, [mentors, searchTerm, specialtyFilter]);
+
   useEffect(() => {
     filterMentors();
-  }, [mentors, searchTerm, specialtyFilter]);
+  }, [filterMentors]);
 
   const loadMentors = async () => {
     try {
@@ -147,33 +170,8 @@ export default function MentorsPage() {
     }
   };
 
-  const filterMentors = () => {
-    let filtered = mentors;
-
-    if (searchTerm) {
-      filtered = filtered.filter(mentor => 
-        (mentor.name && mentor.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (mentor.display_name && mentor.display_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (mentor.title && mentor.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (mentor.headline && mentor.headline.toLowerCase().includes(searchTerm.toLowerCase())) ||
-        (mentor.specialties && mentor.specialties.some(s => s.toLowerCase().includes(searchTerm.toLowerCase())))
-      );
-    }
-
-    if (specialtyFilter) {
-      filtered = filtered.filter(mentor =>
-        mentor.specialties && mentor.specialties.some(s => 
-          s.toLowerCase().includes(specialtyFilter.toLowerCase())
-        )
-      );
-    }
-
-    setFilteredMentors(filtered);
-  };
-
   const formatRate = (mentor: Mentor) => {
     const rate = mentor.rate || mentor.rate_per_min;
-    const currency = mentor.currency || 'USD';
     
     if (!rate) return 'Contact for rate';
     

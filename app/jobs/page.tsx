@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { supabase } from "../../src/integrations/supabase/client"
 import Navigation from "../../components/Navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "../../src/components/ui/card"
@@ -31,9 +31,29 @@ export default function JobsPage() {
     loadJobs()
   }, [])
 
+  const filterJobs = useCallback(() => {
+    let filtered = jobs
+
+    if (searchTerm) {
+      filtered = filtered.filter(job => 
+        job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        job.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (job.description && job.description.toLowerCase().includes(searchTerm.toLowerCase()))
+      )
+    }
+
+    if (locationFilter) {
+      filtered = filtered.filter(job =>
+        job.location && job.location.toLowerCase().includes(locationFilter.toLowerCase())
+      )
+    }
+
+    setFilteredJobs(filtered)
+  }, [jobs, searchTerm, locationFilter])
+
   useEffect(() => {
     filterJobs()
-  }, [jobs, searchTerm, locationFilter])
+  }, [filterJobs])
 
   const loadJobs = async () => {
     try {
@@ -86,26 +106,6 @@ export default function JobsPage() {
     } finally {
       setLoading(false)
     }
-  }
-
-  const filterJobs = () => {
-    let filtered = jobs
-
-    if (searchTerm) {
-      filtered = filtered.filter(job => 
-        job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        job.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (job.description && job.description.toLowerCase().includes(searchTerm.toLowerCase()))
-      )
-    }
-
-    if (locationFilter) {
-      filtered = filtered.filter(job =>
-        job.location && job.location.toLowerCase().includes(locationFilter.toLowerCase())
-      )
-    }
-
-    setFilteredJobs(filtered)
   }
 
   const formatDate = (dateString: string) => {

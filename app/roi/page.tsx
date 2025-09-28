@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '../../src/integrations/supabase/client';
 import Navigation from '../../components/Navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '../../src/components/ui/card';
@@ -36,6 +36,11 @@ interface ROIResults {
   totalROI: number;
 }
 
+interface User {
+  id: string;
+  email?: string;
+}
+
 export default function ROIPage() {
   const [inputs, setInputs] = useState<ROIInputs>({
     currentSalary: 80000,
@@ -48,7 +53,7 @@ export default function ROIPage() {
   
   const [results, setResults] = useState<ROIResults | null>(null);
   const [saving, setSaving] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   
   const searchParams = useSearchParams();
 
@@ -77,7 +82,7 @@ export default function ROIPage() {
     }
   };
 
-  const calculateROI = () => {
+  const calculateROI = useCallback(() => {
     const annualIncrease = inputs.targetSalary - inputs.currentSalary;
     const monthlyIncrease = annualIncrease / 12;
     const breakEvenMonths = monthlyIncrease > 0 ? Math.ceil(inputs.investmentCost / monthlyIncrease) : 0;
@@ -95,7 +100,7 @@ export default function ROIPage() {
     };
 
     setResults(calculatedResults);
-  };
+  }, [inputs]);
 
   const saveCalculation = async () => {
     if (!user || !results) return;
@@ -142,7 +147,7 @@ export default function ROIPage() {
 
   useEffect(() => {
     calculateROI();
-  }, [inputs]);
+  }, [calculateROI]);
 
   return (
     <>
