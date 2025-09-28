@@ -1,6 +1,5 @@
 'use client';
 import { useState } from 'react';
-import Link from 'next/link';
 
 export default function HomePage() {
   const [activeTab, setActiveTab] = useState<'benchmark' | 'jobs' | 'roi'>('benchmark');

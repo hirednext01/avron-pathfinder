@@ -1,6 +1,5 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { createClient } from '@supabase/supabase-js';
 
 export default function TestPage() {
   const [tables, setTables] = useState<string[]>([]);
