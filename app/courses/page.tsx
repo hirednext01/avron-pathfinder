@@ -5,7 +5,7 @@ import { supabase } from '../../src/integrations/supabase/client';
 import Navigation from '../../components/Navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '../../src/components/ui/card';
 import { Button } from '../../src/components/ui/button';
-import { Star, Clock, Users, ExternalLink, TrendingUp, DollarSign } from 'lucide-react';
+import { Star, Clock, ExternalLink } from 'lucide-react';
 
 interface Course {
   id: string;
