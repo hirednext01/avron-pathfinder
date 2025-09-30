@@ -4,6 +4,8 @@ import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "../../src/integrations/supabase/client";
 import Navigation from "../../components/Navigation";
 
+export const dynamic = 'force-dynamic';
+
 export default function LoginPage() {
   return (
     <>
