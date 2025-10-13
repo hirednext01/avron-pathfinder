@@ -1,11 +1,12 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import OpenAI from "https://esm.sh/openai@4";
+// OpenAI DISABLED to avoid costs
+// import OpenAI from "https://esm.sh/openai@4";
 
 const supabase = createClient(
   Deno.env.get("SUPABASE_URL")!,
   Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
 );
-const openai = new OpenAI({ apiKey: Deno.env.get("OPENAI_API_KEY")! });
+// const openai = new OpenAI({ apiKey: Deno.env.get("OPENAI_API_KEY")! });
 
 export default async (req: Request) => {
   try {
@@ -28,29 +29,21 @@ export default async (req: Request) => {
     const mime = resume.mime_type || "application/octet-stream";
     const originalName = resume.original_filename || "resume";
 
-    // Ask model to output STRICT JSON only
-    const sys = `You parse resumes. Return ONLY strict JSON:
-{
-  "summary": {...},
-  "gaps": [{"skill": "string", "priority": "high|medium|low"}],
-  "trajectory": {...},
-  "market_value": {...},
-  "skills": [{"name":"string"}],
-  "entities": {...},
-  "projects": [...]
-}`;
-    const user = `The following is a ${mime} base64-encoded resume named ${originalName}.
-Decode it and extract as per schema. Return ONLY JSON. Base64: ${base64}`;
-
-    const chat = await openai.chat.completions.create({
-      model: "gpt-4.1-mini",
-      messages: [{ role: "system", content: sys }, { role: "user", content: user }],
-      temperature: 0.2
-    });
-
-    const raw = chat.choices?.[0]?.message?.content || "{}";
-    let parsed: any = {};
-    try { parsed = JSON.parse(raw); } catch { parsed = {}; }
+    // MOCK DATA - OpenAI disabled to avoid costs
+    const parsed: any = {
+      summary: { title: "Professional", experience: "Multiple years" },
+      skills: [
+        { name: "JavaScript" },
+        { name: "Python" },
+        { name: "React" }
+      ],
+      gaps: [
+        { skill: "sql", priority: "high" },
+        { skill: "cloud architecture", priority: "medium" }
+      ],
+      trajectory: { direction: "growth" },
+      market_value: { estimate: "competitive" }
+    };
 
     // Fallbacks
     const gaps = Array.isArray(parsed.gaps) && parsed.gaps.length
